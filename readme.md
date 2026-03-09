@@ -10,3 +10,8 @@ O projeto busca homologar outros documentos ex: CNH, CLT, ETC...
 1 - Execute o arquivo scan_id.py
 2 - Envie uma imagem para o endpoint /scan
 3 - Receba o JSON com os dados extraídos
+
+
+# Creditos
+
+PaddleOCR https://github.com/PaddlePaddle/PaddleOCR
