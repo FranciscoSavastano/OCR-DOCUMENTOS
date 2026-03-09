@@ -4,11 +4,14 @@ O projeto busca homologar outros documentos ex: CNH, CLT, ETC...
 
 # Como instalar
 1 - Clone o repositorio
+<br>
 2 - Execute pip install -r requirements.txt (Python 3.12)
 
 # Utilização
 1 - Execute o arquivo scan_id.py
+<br>
 2 - Envie uma imagem para o endpoint /scan
+<br>
 3 - Receba o JSON com os dados extraídos
 
 
