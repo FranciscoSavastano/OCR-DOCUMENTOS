@@ -2,8 +2,9 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-# Install system dependencies required by OpenCV and PaddleOCR
+# Install system dependencies required by OpenCV and PaddleOCR and gcc for compiling python wheels
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
     libgl1 \
     libglib2.0-0 \
     libgomp1 \
