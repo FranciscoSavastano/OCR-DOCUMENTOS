@@ -1,5 +1,7 @@
-[providers]
-python = "3.10"
+providers = ["python"]
+
+[variables]
+NIXPACKS_PYTHON_VERSION = "3.10"
 
 [phases.setup]
 # These system libraries are required by OpenCV (cv2) and PaddleOCR on Linux environments.
