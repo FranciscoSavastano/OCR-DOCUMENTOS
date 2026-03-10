@@ -1,4 +1,4 @@
-FROM python:3.10-slim-bullseye
+FROM python:3.10-bullseye
 
 WORKDIR /app
 
@@ -33,14 +33,11 @@ RUN pip install --no-cache-dir -r requirements.txt && \
     pip uninstall -y opencv-python opencv-contrib-python opencv-python-headless opencv-contrib-python-headless && \
     pip install --no-cache-dir opencv-contrib-python-headless==4.6.0.66
 
-# Pre-download PaddleOCR models into the Docker image
-RUN python -c "from paddleocr import PaddleOCR; PaddleOCR(use_angle_cls=True, lang='pt')"
-
 # Copy the rest of the application code
 COPY . .
 
 # Expose port (must match your gunicorn binding and docker-compose mapping)
 EXPOSE 5000
 
-# Start server using gunicorn
-CMD ["gunicorn", "--workers", "2", "--bind", "0.0.0.0:5000", "--timeout", "120", "scan_id:app"]
+# Start server using gunicorn. Increased timeout for the first model download at runtime.
+CMD ["gunicorn", "--workers", "1", "--bind", "0.0.0.0:5000", "--timeout", "300", "scan_id:app"]
