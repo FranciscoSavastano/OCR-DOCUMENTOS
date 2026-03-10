@@ -7,6 +7,9 @@ ENV OMP_NUM_THREADS=1
 ENV OPENBLAS_NUM_THREADS=1
 ENV MKL_NUM_THREADS=1
 
+# Resolve potential libgomp/segmentation fault issues by preloading it
+ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libgomp.so.1
+
 # Install system dependencies required by OpenCV and PaddleOCR and gcc for compiling python wheels
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
