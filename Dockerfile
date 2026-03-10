@@ -1,4 +1,4 @@
-FROM python:3.11-bookworm
+FROM python:3.10-slim-bullseye
 
 WORKDIR /app
 
@@ -7,18 +7,19 @@ ENV OMP_NUM_THREADS=1
 ENV OPENBLAS_NUM_THREADS=1
 ENV MKL_NUM_THREADS=1
 
-# Disable AVX instructions and set memory strategies for instability prevention
+# Disable AVX, MKLDNN, and set memory strategies for extreme stability
 ENV PADDLE_WITH_AVX=OFF
+ENV FLAGS_use_mkldnn=0
 ENV FLAGS_allocator_strategy=naive_best_fit
 ENV SET_CPU_CORE_PREFERENCE=0
 ENV GLOG_minloglevel=3
+ENV KMP_DUPLICATE_LIB_OK=TRUE
 
-# Resolve potential libgomp/segmentation fault issues by preloading it
-ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libgomp.so.1
+# glibc memory allocation tweak to prevent munmap_chunk errors
+ENV MALLOC_TRIM_THRESHOLD_=-1
 
-# Install system dependencies required by OpenCV and PaddleOCR and gcc for compiling python wheels
+# Install minimal system dependencies required by OpenCV and PaddleOCR
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
     libgl1 \
     libglib2.0-0 \
     libgomp1 \
