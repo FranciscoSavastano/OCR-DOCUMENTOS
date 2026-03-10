@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  br_id_scanner:
+    build: .
+    container_name: br_id_scanner_app
+    ports:
+      - "5000:5000"
+    restart: always
