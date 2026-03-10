@@ -10,6 +10,8 @@ ENV MKL_NUM_THREADS=1
 # Disable AVX instructions and set memory strategies for instability prevention
 ENV PADDLE_WITH_AVX=OFF
 ENV FLAGS_allocator_strategy=naive_best_fit
+ENV SET_CPU_CORE_PREFERENCE=0
+ENV GLOG_minloglevel=3
 
 # Resolve potential libgomp/segmentation fault issues by preloading it
 ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libgomp.so.1
@@ -25,11 +27,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Copy python requirements
 COPY requirements.txt .
 
-# Forcefully remove any conflicting GUI-based libraries before installation
-RUN pip uninstall -y opencv-python opencv-contrib-python opencv-python-headless opencv-contrib-python-headless || true
-
-# Install requirements
-RUN pip install --no-cache-dir -r requirements.txt
+# Install requirements then STRICTLY cleanup and reinstall OpenCV to avoid conflicts
+RUN pip install --no-cache-dir -r requirements.txt && \
+    pip uninstall -y opencv-python opencv-contrib-python opencv-python-headless opencv-contrib-python-headless && \
+    pip install --no-cache-dir opencv-contrib-python-headless==4.6.0.66
 
 # Pre-download PaddleOCR models into the Docker image
 RUN python -c "from paddleocr import PaddleOCR; PaddleOCR(use_angle_cls=True, lang='pt')"
