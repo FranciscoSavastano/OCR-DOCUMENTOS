@@ -3,8 +3,9 @@ providers = ["python"]
 [variables]
 NIXPACKS_PYTHON_VERSION = "3.10"
 
-[phases.setup]
-# These system libraries are required by OpenCV (cv2) and PaddleOCR on Linux environments.
+# Using a custom phase name (system_deps) instead of "setup" so we don't accidentally overwrite 
+# the Python provider's default setup phase commands, which was causing the /bin/bash empty arg error.
+[phases.system_deps]
 aptPkgs = [
     "libgl1-mesa-glx",
     "libglib2.0-0",
@@ -12,5 +13,4 @@ aptPkgs = [
 ]
 
 [start]
-# We use gunicorn instead of Flask's built-in development server for production.
 cmd = "gunicorn --workers 2 --bind 0.0.0.0:5000 --timeout 120 scan_id:app"
