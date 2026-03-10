@@ -4,12 +4,11 @@ providers = ["python"]
 NIXPACKS_PYTHON_VERSION = "3.10"
 
 # Using a custom phase name (system_deps) instead of "setup" so we don't accidentally overwrite 
-# the Python provider's default setup phase commands, which was causing the /bin/bash empty arg error.
+# the Python provider's default setup phase commands.
 [phases.system_deps]
-aptPkgs = [
-    "libgl1-mesa-glx",
-    "libglib2.0-0",
-    "libgomp1"
+cmds = [
+    "apt-get update",
+    "apt-get install -y libgl1 libglib2.0-0"
 ]
 
 [start]
