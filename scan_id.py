@@ -13,12 +13,25 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-print("Iniciando o leitor de OCR globalmente (PaddleOCR)...")
-try:
-    ocr_engine = PaddleOCR(use_angle_cls=True, lang='pt', show_log=False)
-except Exception as e:
-    print(f"Erro crítico ao inicializar o PaddleOCR global: {e}")
-    ocr_engine = None
+ocr_engine = None
+
+def get_ocr_engine():
+    global ocr_engine
+    if ocr_engine is None:
+        print("Iniciando o leitor de OCR (PaddleOCR) sob demanda...")
+        try:
+            # Força uso de CPU e desativa MKLDNN para evitar crashes de memória (munmap_chunk)
+            ocr_engine = PaddleOCR(
+                use_angle_cls=True, 
+                lang='pt', 
+                show_log=False,
+                use_gpu=False,
+                enable_mkldnn=False
+            )
+        except Exception as e:
+            print(f"Erro crítico ao inicializar o PaddleOCR: {e}")
+            ocr_engine = None
+    return ocr_engine
 
 def get_proximity_and_correct(text):
     FI = "FILIAÇÃO"
@@ -59,14 +72,15 @@ def scan_brazil_id():
         image_file.save(temp.name)
         temp_image_path = temp.name
 
-    if ocr_engine is None:
+    engine = get_ocr_engine()
+    if engine is None:
         if os.path.exists(temp_image_path):
             os.remove(temp_image_path)
         return jsonify({"erro": "Motor de OCR não foi carregado corretamente"}), 500
     
     print("Rodando a extração do OCR no documento...")
     try:
-        result = ocr_engine.ocr(temp_image_path, cls=True)
+        result = engine.ocr(temp_image_path, cls=True)
     except Exception as e:
         print(f"Erro crítico durante a extração de texto OCR: {e}")
         if os.path.exists(temp_image_path):

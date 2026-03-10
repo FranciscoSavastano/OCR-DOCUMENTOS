@@ -16,6 +16,7 @@ ENV GLOG_minloglevel=3
 ENV KMP_DUPLICATE_LIB_OK=TRUE
 
 # glibc memory allocation tweak to prevent munmap_chunk errors
+ENV MALLOC_CHECK_=3
 ENV MALLOC_TRIM_THRESHOLD_=-1
 
 # Install minimal system dependencies required by OpenCV and PaddleOCR
